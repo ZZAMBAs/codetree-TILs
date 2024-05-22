@@ -5,7 +5,7 @@ public class Main {
     static Node[] nodes = new Node[100001];
     static List<Integer> roots = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
-    static int Q, mid, pid, color, maxDepth, nowTime;
+    static int Q, mid, pid, color, maxDepth, nowTime, res;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
@@ -74,25 +74,24 @@ public class Main {
     }
 
     static void calScore() {
-        int res = 0;
-        boolean[] visited = new boolean[100001];
-        for(int i = 1; i < 100001; i++) {
-            if (nodes[i] != null && !visited[i])
-                res += cal(i, new int[]{0, 0, 0, 0, 0, 0});
-        }
+        res = 0;
+
+        roots.forEach(v -> cal(v, new int[] {0, 0, 0, 0, 0, 0}));
 
         sb.append(res);
         sb.append('\n');
     }
 
-    private static int cal(int id, int[] arr) {
+    private static void cal(int id, int[] arr) {
         if (nodes[id].pid != -1 && nodes[nodes[id].pid].colorUpdatedAt > nodes[id].colorUpdatedAt) {
             nodes[id].colorUpdatedAt = nodes[nodes[id].pid].colorUpdatedAt;
             nodes[id].color = nodes[nodes[id].pid].color;
         }
 
+        int[] initArr = Arrays.copyOf(arr, 6);
+
         for (int nextId : nodes[id].children) {
-            int[] arrCopy = Arrays.copyOf(arr, 6);
+            int[] arrCopy = Arrays.copyOf(initArr, 6);
             cal(nextId, arrCopy);
             IntStream.range(1, 6).forEach(i -> arr[i] |= arrCopy[i]);
         }
@@ -101,7 +100,7 @@ public class Main {
         int cnt = 0;
         for (int i = 1; i < 6; i++)
             cnt = arr[i] == 1 ? cnt + 1 : cnt;
-        return cnt * cnt;
+        res += cnt * cnt;
     }
 
     static class Node {
