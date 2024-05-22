@@ -5,7 +5,7 @@ public class Main {
     static Node[] nodes = new Node[100001];
     static List<Integer> roots = new ArrayList<>();
     static Scanner sc = new Scanner(System.in);
-    static int Q, mid, pid, color, maxDepth;
+    static int Q, mid, pid, color, maxDepth, nowTime;
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) {
@@ -54,11 +54,21 @@ public class Main {
 
     static void changeColor(int id, int color) {
         nodes[id].color = color;
-        for (int next : nodes[id].children)
-            changeColor(next, color);
+        nodes[id].colorUpdatedAt = nowTime++;
     }
 
     static void viewColor(int id) {
+        Node realColorNode = nodes[id];
+        int pid = realColorNode.pid;
+        while(pid != -1) {
+            Node par = nodes[pid];
+            if (realColorNode.colorUpdatedAt < par.colorUpdatedAt)
+                realColorNode = par;
+            pid = par.pid;
+        }
+
+        nodes[id].color = realColorNode.color;
+        nodes[id].colorUpdatedAt = realColorNode.colorUpdatedAt;
         sb.append(nodes[id].color);
         sb.append('\n');
     }
@@ -76,6 +86,11 @@ public class Main {
     }
 
     private static int cal(int id, int[] arr) {
+        if (nodes[id].pid != -1 && nodes[nodes[id].pid].colorUpdatedAt > nodes[id].colorUpdatedAt) {
+            nodes[id].colorUpdatedAt = nodes[nodes[id].pid].colorUpdatedAt;
+            nodes[id].color = nodes[nodes[id].pid].color;
+        }
+
         for (int nextId : nodes[id].children) {
             int[] arrCopy = Arrays.copyOf(arr, 6);
             cal(nextId, arrCopy);
@@ -94,6 +109,7 @@ public class Main {
         int maxDepth;
         int color;
         int pid;
+        int colorUpdatedAt = nowTime++;
         List<Integer> children = new ArrayList<>();
 
         Node(int id, int maxDepth, int color, int pid) {
