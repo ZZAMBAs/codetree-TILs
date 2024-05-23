@@ -64,10 +64,11 @@ public class Main {
 
                 ret = Math.max(ret, curG.r + 1);
 
-                int curGExitR = curG.r + dl[d][0], curGExitC = curG.c + dl[d][1];
+                int curGExitR = curG.r + dl[curG.d][0], curGExitC = curG.c + dl[curG.d][1];
 
                 IntStream.range(0, 4).forEach(i -> {
                     int nextR = curGExitR + dl[i][0], nextC = curGExitC + dl[i][1];
+                    
                     if (inRange(nextR, nextC) && board[nextR][nextC] != 0 && !visited.contains(Math.abs(board[nextR][nextC]))) {
                         int nextGNum = Math.abs(board[nextR][nextC]);
                         visited.add(nextGNum);
@@ -103,7 +104,8 @@ public class Main {
                 this.c -= 1;
                 return false;
             }
-
+            this.d = (this.d + 1) % 4;
+            
             return true;
         }
 
@@ -117,6 +119,7 @@ public class Main {
                 this.c += 1;
                 return false;
             }
+            this.d = (this.d + 3) % 4;
 
             return true;
         }
