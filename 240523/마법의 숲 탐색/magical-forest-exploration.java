@@ -43,7 +43,7 @@ public class Main {
 
             g.move();
 
-            if (g.r <= 2) {
+            if (g.r <= 3) {
                 board = new int[R + 3][C];
                 return 0;
             }
@@ -82,7 +82,7 @@ public class Main {
         void move() {
             boolean sw = true;
             while(sw)
-                sw = down() ? true : east() ? true : west();
+                sw = down() ? true : west() ? true : east();
         }
 
         boolean down() {
