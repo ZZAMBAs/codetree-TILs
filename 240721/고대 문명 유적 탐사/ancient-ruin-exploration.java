@@ -22,6 +22,7 @@ public class Main {
             for (int i = 1; i <= 3; i++)
                 for (int j = 1; j <= 3; j++)
                     for (int rotateNum = 1; rotateNum <= 3; rotateNum++) {
+                        rotate(i, j, rotateNum);
                         Info info = findVal(i, j, rotateNum);
 
                         if (info.getVal() <= 0)
@@ -37,42 +38,45 @@ public class Main {
 
             Info maxInfo = infos.get(0);
 
-            mapCopy(maxInfo.map, map);
-            addBlocksIdx += maxInfo.getVal();
-            results.add(maxInfo.getVal());
+            continueValSum(maxInfo);
         }
 
         System.out.print(results.stream().map(String::valueOf).collect(Collectors.joining(" ")));
     }
 
-    static Info findVal(int midRow, int midCol, int rotateNum) {
-        int valSum = 0;
-        int tempAddBlocksIdx = addBlocksIdx;
+    static void continueValSum(Info maxInfo) {
+        fill(maxInfo.map);
+        int addVal = getValByBfs(maxInfo.map);
+        while (addVal > 0) {
+            maxInfo.val += addVal;
 
-        rotate(midRow, midCol, rotateNum);
-
-        while (true) {
-            int val = 0;
-            boolean[][] visited = new boolean[5][5];
-
-            for (int i = 0; i < 5; i++)
-                for (int j = 0; j < 5; j++)
-                    if (!visited[i][j])
-                        val += bfs(i, j, visited);
-
-            if (val == 0)
-                break;
-
-            valSum += val;
-
-            fill(tempAddBlocksIdx);
-            tempAddBlocksIdx += val;
+            fill(maxInfo.map);
+            addVal = getValByBfs(maxInfo.map);
         }
+
+        mapCopy(maxInfo.map, map);
+        results.add(maxInfo.getVal());
+    }
+
+    static Info findVal(int midRow, int midCol, int rotateNum) {
+        int valSum = getValByBfs(tempMap);
 
         Info info = new Info(valSum, rotateNum, midRow, midCol);
         mapCopy(tempMap, info.map);
 
         return info;
+    }
+
+    static int getValByBfs(int[][] map) {
+        int valSum = 0;
+
+        boolean[][] visited = new boolean[5][5];
+
+        for (int i = 0; i < 5; i++)
+            for (int j = 0; j < 5; j++)
+                if (!visited[i][j])
+                    valSum += bfs(i, j, visited, map);
+        return valSum;
     }
 
     static void rotate(int midRow, int midCol, int rotateNum) {
@@ -108,7 +112,7 @@ public class Main {
         }*/
     }
 
-    static int bfs(int r, int c, boolean[][] visited) {
+    static int bfs(int r, int c, boolean[][] visited, int[][] map) {
         Queue<Pair> q = new ArrayDeque<>();
         q.add(new Pair(r, c));
         visited[r][c] = true;
@@ -124,7 +128,7 @@ public class Main {
                     int nextR = curP.r + d[0];
                     int nextC = curP.c + d[1];
 
-                    if (inRange(nextR, nextC) && !visited[nextR][nextC] && tempMap[nextR][nextC] == tempMap[r][c]) {
+                    if (inRange(nextR, nextC) && !visited[nextR][nextC] && map[nextR][nextC] == map[r][c]) {
                         visited[nextR][nextC] = true;
                         q.add(new Pair(nextR, nextC));
                     }
@@ -138,7 +142,7 @@ public class Main {
         }*/
 
         if (coor.size() >= 3)
-            coor.forEach(p -> tempMap[p.r][p.c] = 0);
+            coor.forEach(p -> map[p.r][p.c] = 0);
 
         return coor.size() >= 3 ? coor.size() : 0;
     }
@@ -147,11 +151,11 @@ public class Main {
         return r >= 0 && r < 5 && c >= 0 && c < 5;
     }
 
-    static void fill(int tempAddBlocksIdx) {
+    static void fill(int[][] map) {
         for (int j = 0; j < 5; j++)
             for (int i = 4; i >= 0; i--)
-                if (tempMap[i][j] == 0)
-                    tempMap[i][j] = additionalBlocks[tempAddBlocksIdx++];
+                if (map[i][j] == 0)
+                    map[i][j] = additionalBlocks[addBlocksIdx++];
     }
 
     static void mapCopy(int[][] original, int[][] forCopy) {
