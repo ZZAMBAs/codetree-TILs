@@ -1,8 +1,9 @@
 import java.util.*;
-import java.util.stream.*;
+import java.time.*;
 
 public class Main {
     static final Scanner sc = new Scanner(System.in);
+    static final int YEAR = 2011;
 
     static int m1, d1, m2, d2;
     static int[] days = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -14,28 +15,7 @@ public class Main {
         m2 = sc.nextInt();
         d2 = sc.nextInt();
 
-        int dayCursor = 1;
-        int passedDay = 0;
-        int w = 1;
-
-        if (m2 < m1 || (m1 == m2 && d2 < d1)) {
-            w *= -1;
-
-            int temp = m1;
-            m1 = m2;
-            m2 = temp;
-
-            temp = d1;
-            d1 = d2;
-            d2 = temp;
-        }
-        
-        for (int i = m1 - 1; i < m2 - 1; i++) {
-            passedDay += days[i];
-        }
-        passedDay += d2 - d1;
-        passedDay *= w;
-        dayCursor += passedDay;
+        int dayCursor = 1 + LocalDate.of(YEAR, m2, d2).getDayOfYear() - LocalDate.of(YEAR, m1, d1).getDayOfYear();
 
         while (dayCursor < 0)
             dayCursor += daysName.length;
