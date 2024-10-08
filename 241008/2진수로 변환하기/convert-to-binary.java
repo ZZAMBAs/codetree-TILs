@@ -6,6 +6,11 @@ public class Main {
     static int n = sc.nextInt();
 
     public static void main(String[] args) {
+        if (n == 0) {
+            System.out.print(0);
+            return;
+        }
+
         Deque stk = new ArrayDeque<>();
 
         while (n > 0) {
