@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         int n = sc.nextInt();
-        PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparing(Pair::getX));
+        PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparing(Pair::getX).thenComparing(Pair::getY));
         while (n-- > 0) {
             pq.add(new Pair(sc.nextInt(), true));
             pq.add(new Pair(sc.nextInt(), false));
@@ -14,7 +14,8 @@ public class Main {
 
         int res = 0, cur = 0;
         while (!pq.isEmpty()) {
-            cur += pq.poll().y ? 1 : -1;
+            Pair curP = pq.poll();
+            cur += curP.y ? 1 : -1;
             res = Math.max(res, cur);
         }
 
@@ -31,6 +32,10 @@ public class Main {
 
         int getX() {
             return x;
+        }
+
+        boolean getY() {
+            return y;
         }
     }
 }
