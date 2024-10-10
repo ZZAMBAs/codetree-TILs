@@ -20,7 +20,7 @@ public class Main {
             curLoc = next;
         }
 
-        if (cmd == "R")
+        if (cmd.equals("R"))
             System.out.print((maxV - curLoc) + " " + (curLoc - minV + 1));
         else
             System.out.print((maxV - curLoc + 1) + " " + (curLoc - minV));
