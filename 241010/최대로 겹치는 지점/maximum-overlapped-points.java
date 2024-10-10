@@ -1,0 +1,41 @@
+import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    static final Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int n = sc.nextInt();
+        PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparing(Pair::getX).thenComparing(Comparator.comparing(Pair::getY).reversed()));
+        while (n-- > 0) {
+            pq.add(new Pair(sc.nextInt(), true));
+            pq.add(new Pair(sc.nextInt(), false));
+        }
+
+        int res = 0, cur = 0;
+        while (!pq.isEmpty()) {
+            Pair curP = pq.poll();
+            cur += curP.y ? 1 : -1;
+            res = Math.max(res, cur);
+        }
+
+        System.out.print(res);
+    }
+
+    static class Pair {
+        int x;
+        boolean y;
+        Pair(int x, boolean y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        int getX() {
+            return x;
+        }
+
+        boolean getY() {
+            return y;
+        }
+    }
+}
